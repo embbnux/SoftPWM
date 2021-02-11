@@ -33,7 +33,11 @@
 
 // for each timer, these macros define how to actually use it
 #if defined(USE_TIMER2)
+#if defined(TIMER2_COMP_vect)
+#define SOFTPWM_TIMER_INTERRUPT    TIMER2_COMP_vect
+#else
 #define SOFTPWM_TIMER_INTERRUPT    TIMER2_COMPA_vect
+#endif
 #define SOFTPWM_TIMER_SET(val)     (TCNT2 = (val))
 #define SOFTPWM_TIMER_INIT(ocr) ({\
   TIFR2 = (1 << TOV2);    /* clear interrupt flag */ \
