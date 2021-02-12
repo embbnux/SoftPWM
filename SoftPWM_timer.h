@@ -39,6 +39,14 @@
 #define SOFTPWM_TIMER_INTERRUPT    TIMER2_COMPA_vect
 #endif
 #define SOFTPWM_TIMER_SET(val)     (TCNT2 = (val))
+if defined (__AVR_ATmega169PA__)
+#define SOFTPWM_TIMER_INIT(ocr) ({\
+  TIFR2 = (1 << TOV2);    /* clear interrupt flag */ \
+  TCCR2A = (1 << CS21) | (1 << WGM21);   /* start timer (ck/8 prescalar), CTC mode */ \
+  OCR2A = (ocr);          /* We want to have at least 30Hz or else it gets choppy */ \
+  TIMSK2 = (1 << OCIE2A); /* enable timer2 output compare match interrupt */ \
+})
+#else
 #define SOFTPWM_TIMER_INIT(ocr) ({\
   TIFR2 = (1 << TOV2);    /* clear interrupt flag */ \
   TCCR2B = (1 << CS21);   /* start timer (ck/8 prescalar) */ \
@@ -46,6 +54,7 @@
   OCR2A = (ocr);          /* We want to have at least 30Hz or else it gets choppy */ \
   TIMSK2 = (1 << OCIE2A); /* enable timer2 output compare match interrupt */ \
 })
+#endif
 #elif defined(USE_TIMER4_HS)
 #define SOFTPWM_TIMER_INTERRUPT    TIMER4_COMPA_vect
 #define SOFTPWM_TIMER_SET(val)     (TCNT4 = (val))
