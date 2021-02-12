@@ -39,7 +39,7 @@
 #define SOFTPWM_TIMER_INTERRUPT    TIMER2_COMPA_vect
 #endif
 #define SOFTPWM_TIMER_SET(val)     (TCNT2 = (val))
-if defined (__AVR_ATmega169PA__)
+#if defined (__AVR_ATmega169PA__)
 #define SOFTPWM_TIMER_INIT(ocr) ({\
   TIFR2 = (1 << TOV2);    /* clear interrupt flag */ \
   TCCR2A = (1 << CS21) | (1 << WGM21);   /* start timer (ck/8 prescalar), CTC mode */ \
@@ -80,4 +80,3 @@ if defined (__AVR_ATmega169PA__)
   t->begin(softpwm_interval_timer, 1000000.0 / (float)(SOFTPWM_FREQ * 256)); \
 })
 #endif
-
